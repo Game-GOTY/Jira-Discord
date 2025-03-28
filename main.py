@@ -45,7 +45,7 @@ def jira_webhook():
         issue_key = data["issue"]["key"]
         issue_summary = data["issue"]["fields"]["summary"]
         event_type = data["webhookEvent"].split(":")[1]
-        user = data["displayName"]
+        user = data["issue"]["fields"]["reporter"]["displayName"]
         time = (
             datetime.fromtimestamp(data["timestamp"] / 1000, timezone.utc)
             .astimezone(data["timeZone"])
