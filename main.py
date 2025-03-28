@@ -13,7 +13,7 @@ DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 def jira_webhook():
     # print(f"Headers: {request.headers}")
     # print(f"Content-Type: {request.content_type}")
-    print(f"Raw Data: {request.get_data(as_text=True)}")
+    # print(f"Raw Data: {request.get_data(as_text=True)}")
     # print(f"Query Params: {request.args}")
 
     if not DISCORD_WEBHOOK_URL:
@@ -45,7 +45,7 @@ def jira_webhook():
         issue_key = data["issue"]["key"]
         issue_summary = data["issue"]["fields"]["summary"]
         event_type = data["issue_event_type_name"]
-        status = data["issue"]["fields"]["status"]["statusCategory"]["name"]
+        status = data["issue"]["fields"]["status"]["name"]
         user = data["user"]["displayName"]
         time_zone_str = data["user"]["timeZone"]
         time = (
