@@ -13,7 +13,7 @@ DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 def jira_webhook():
     # print(f"Headers: {request.headers}")
     # print(f"Content-Type: {request.content_type}")
-    # print(f"Raw Data: {request.get_data(as_text=True)}")
+    print(f"Raw Data: {request.get_data(as_text=True)}")
     # print(f"Query Params: {request.args}")
 
     if not DISCORD_WEBHOOK_URL:
@@ -56,7 +56,7 @@ def jira_webhook():
         if data["issue_event_type_name"] == "issue_created":
             message = f"**{issue_key}** - **{event_type}**: **{issue_summary}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         else:
-            message = f"**{issue_key}** - Status change: **{status}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
+            message = f"**{issue_key}** - Status changed: **{status}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         # response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
         print(message)
         if response.status_code == 204:
