@@ -42,7 +42,9 @@ def jira_webhook():
     # Try to parse JSON payload
     try:
         data = request.json
-        if data["issue"]["project"]["id"] == "10005":  # only use for Dev Board!
+        if (
+            data["issue"]["fields"]["project"]["id"] == "10005"
+        ):  # only use for Dev Board!
             issue_key = data["issue"]["key"]
             issue_summary = data["issue"]["fields"]["summary"]
             event_type = data["webhookEvent"].split(":")[1]
