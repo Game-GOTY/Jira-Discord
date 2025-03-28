@@ -45,10 +45,10 @@ def jira_webhook():
         issue_key = data["issue"]["key"]
         issue_summary = data["issue"]["fields"]["summary"]
         event_type = data["webhookEvent"].split(":")[1]
-        user = data["issue"]["fields"]["reporter"]["displayName"]
+        user = data["user"]["displayName"]
         time = (
             datetime.fromtimestamp(data["timestamp"] / 1000, timezone.utc)
-            .astimezone(data["timeZone"])
+            .astimezone(data["user"]["timeZone"])
             .strftime("%Y-%m-%d %H:%M:%S")
         )
         message = f"**{issue_key}** - {event_type}: {issue_summary} by {user} at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
