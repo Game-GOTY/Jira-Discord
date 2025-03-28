@@ -14,7 +14,7 @@ def jira_webhook():
     # print(f"Headers: {request.headers}")
     # print(f"Content-Type: {request.content_type}")
     # print(f"Raw Data: {request.get_data(as_text=True)}")
-    # print(f"Query Params: {request.args}")
+    print(f"Query Params: {request.args}")
 
     if not DISCORD_WEBHOOK_URL:
         return "DISCORD_WEBHOOK_URL not set in environment", 500
