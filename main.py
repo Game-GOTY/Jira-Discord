@@ -1,6 +1,8 @@
 from flask import Flask, request
 import requests
 import os
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 app = Flask(__name__)
 
@@ -22,7 +24,7 @@ def jira_webhook():
     if jira_token and "X-Jira-Webhook-Token" in request.headers:
         received_token = request.headers.get("X-Jira-Webhook-Token", "")
         if received_token != jira_token:
-            print(f"Token mismatch: expected {jira_token}, got {received_token}")
+            print(f"Jira Token mismatch")
             return "Invalid token", 403
 
     # Handle empty or non-JSON requests
@@ -42,8 +44,14 @@ def jira_webhook():
         data = request.json
         issue_key = data["issue"]["key"]
         issue_summary = data["issue"]["fields"]["summary"]
-        event_type = data["webhookEvent"]
-        message = f"**{issue_key}** - {event_type}: {issue_summary}"
+        event_type = data["webhookEvent"].split(":")[1]
+        user = data["displayName"]
+        time = (
+            datetime.fromtimestamp(data["timestamp"] / 1000, timezone.utc)
+            .astimezone(data["timeZone"])
+            .strftime("%Y-%m-%d %H:%M:%S")
+        )
+        message = f"**{issue_key}** - {event_type}: {issue_summary} by {user} at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
         if response.status_code == 204:
             return "Success", 200
@@ -55,5 +63,6 @@ def jira_webhook():
 
 
 if __name__ == "__main__":
+
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
