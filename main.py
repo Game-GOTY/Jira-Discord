@@ -44,7 +44,7 @@ def jira_webhook():
         data = request.json
         issue_key = data["issue"]["key"]
         issue_summary = data["issue"]["fields"]["summary"]
-        event_type = data["issue_event_type_name"]
+        event_type = data["webhookEvent"].split(":")[1]
         status = data["issue"]["fields"]["status"]["name"]
         user = data["user"]["displayName"]
         time_zone_str = data["user"]["timeZone"]
@@ -53,7 +53,7 @@ def jira_webhook():
             .astimezone(ZoneInfo(time_zone_str))  # Convert to the correct timezone
             .strftime("%Y-%m-%d %H:%M:%S")
         )
-        if data["issue_event_type_name"] == "issue_created":
+        if event_type == "issue_created":
             message = f"**{issue_key}** - **{event_type}**: **{issue_summary}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         else:
             message = f"**{issue_key}** - Status changed: **{status}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
