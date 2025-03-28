@@ -44,6 +44,7 @@ def jira_webhook():
         data = request.json
         if (
             data["issue"]["fields"]["project"]["id"] == "10005"
+            and data["issue"]["fields"]["project"]["name"] == "GOTY"
         ):  # only use for Dev Board!
             issue_key = data["issue"]["key"]
             issue_summary = data["issue"]["fields"]["summary"]
