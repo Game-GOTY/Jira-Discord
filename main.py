@@ -5,11 +5,6 @@ import os
 app = Flask(__name__)
 
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
-jira_token = os.environ.get("JIRA_SECRET_TOKEN")
-
-print(f"DISCORD_WEBHOOK_URL: {DISCORD_WEBHOOK_URL}")
-print(f"DISCORD_WEBHOOK_URL: {jira_token}")  # Debug
-# Debug
 
 
 @app.route("/webhook", methods=["POST"])
@@ -22,12 +17,10 @@ def jira_webhook():
     if not DISCORD_WEBHOOK_URL:
         return "DISCORD_WEBHOOK_URL not set in environment", 500
 
-    # Optional: Validate Jira secret token only if Jira sends a specific header
+    # Token validation (disabled unless Jira sends a specific header)
     jira_token = os.environ.get("JIRA_SECRET_TOKEN")
-    if jira_token:
-        received_token = request.headers.get(
-            "X-Jira-Webhook-Token", ""
-        )  # Adjust header name if needed
+    if jira_token and "X-Jira-Webhook-Token" in request.headers:
+        received_token = request.headers.get("X-Jira-Webhook-Token", "")
         if received_token != jira_token:
             print(f"Token mismatch: expected {jira_token}, got {received_token}")
             return "Invalid token", 403
