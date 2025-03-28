@@ -5,7 +5,11 @@ import os
 app = Flask(__name__)
 
 DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
-print(f"DISCORD_WEBHOOK_URL: {DISCORD_WEBHOOK_URL}")  # Debug
+jira_token = os.environ.get("JIRA_SECRET_TOKEN")
+
+print(f"DISCORD_WEBHOOK_URL: {DISCORD_WEBHOOK_URL}")
+print(f"DISCORD_WEBHOOK_URL: {jira_token}")  # Debug
+# Debug
 
 
 @app.route("/webhook", methods=["POST"])
