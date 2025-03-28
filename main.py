@@ -66,6 +66,8 @@ def jira_webhook():
                 return "Success", 200
             else:
                 return f"Failed to send to Discord: {response.text}", 500
+        else:
+            print("Not Dev table. ignored!")
     except Exception as e:
         print(f"Error: {e}")
         return "Invalid payload", 415
