@@ -53,7 +53,7 @@ def jira_webhook():
             .astimezone(ZoneInfo(time_zone_str))  # Convert to the correct timezone
             .strftime("%Y-%m-%d %H:%M:%S")
         )
-        if event_type == "issue_created":
+        if event_type == "issue_created" or event_type == "issue_deleted":
             message = f"**{issue_key}** - **{event_type}**: **{issue_summary}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         else:
             message = f"**{issue_key}** - Status changed: **{status}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
