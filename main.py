@@ -10,17 +10,30 @@ JIRA_SECRET_TOKEN = os.environ.get("JIRA_SECRET_TOKEN")  # Optional
 
 @app.route("/webhook", methods=["POST"])
 def jira_webhook():
-    # Log raw request details
+    # Log request details
     print(f"Headers: {request.headers}")
     print(f"Content-Type: {request.content_type}")
     print(f"Raw Data: {request.get_data(as_text=True)}")
+    print(f"Query Params: {request.args}")  # Capture query string like ?triggeredByUser
 
     # Optional: Validate Jira secret token
     received_token = request.headers.get("X-Hub-Signature", "")
     if JIRA_SECRET_TOKEN and received_token != JIRA_SECRET_TOKEN:
         return "Invalid token", 403
 
-    # Try to parse JSON, fallback if it fails
+    # Handle empty or non-JSON requests
+    if not request.content_type or request.content_length == 0:
+        query_user = request.args.get("triggeredByUser", "Unknown")
+        message = (
+            f"Webhook ping or empty request received. Triggered by user: {query_user}"
+        )
+        response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
+        if response.status_code == 204:
+            return "Success (empty request handled)", 200
+        else:
+            return "Failed to send to Discord", 500
+
+    # Try to parse JSON payload
     try:
         data = request.json
         issue_key = data["issue"]["key"]
@@ -36,7 +49,7 @@ def jira_webhook():
             return "Failed to send to Discord", 500
     except Exception as e:
         print(f"Error: {e}")
-        return "Invalid payload or processing error", 415
+        return "Invalid payload", 415
 
 
 if __name__ == "__main__":
