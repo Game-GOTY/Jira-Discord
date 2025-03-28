@@ -56,7 +56,7 @@ def jira_webhook():
         if event_type == "issue_created" or event_type == "issue_deleted":
             message = f"**{issue_key}** - **{event_type}**: **{issue_summary}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         else:
-            message = f"**{issue_key}** - Status changed: **{status}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
+            message = f"**{issue_key}** - Status changed: **{status}** for **{issue_summary}** by **{user}** at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
         # response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
         print(message)
         if response.status_code == 204:
