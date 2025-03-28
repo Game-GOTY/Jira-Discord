@@ -11,10 +11,10 @@ DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
 
 @app.route("/webhook", methods=["POST"])
 def jira_webhook():
-    print(f"Headers: {request.headers}")
-    print(f"Content-Type: {request.content_type}")
-    print(f"Raw Data: {request.get_data(as_text=True)}")
-    print(f"Query Params: {request.args}")
+    # print(f"Headers: {request.headers}")
+    # print(f"Content-Type: {request.content_type}")
+    # print(f"Raw Data: {request.get_data(as_text=True)}")
+    # print(f"Query Params: {request.args}")
 
     if not DISCORD_WEBHOOK_URL:
         return "DISCORD_WEBHOOK_URL not set in environment", 500
@@ -46,9 +46,10 @@ def jira_webhook():
         issue_summary = data["issue"]["fields"]["summary"]
         event_type = data["webhookEvent"].split(":")[1]
         user = data["user"]["displayName"]
+        time_zone_str = data["user"]["timeZone"]
         time = (
             datetime.fromtimestamp(data["timestamp"] / 1000, timezone.utc)
-            .astimezone(data["user"]["timeZone"])
+            .astimezone(ZoneInfo(time_zone_str))  # Convert to the correct timezone
             .strftime("%Y-%m-%d %H:%M:%S")
         )
         message = f"**{issue_key}** - {event_type}: {issue_summary} by {user} at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
