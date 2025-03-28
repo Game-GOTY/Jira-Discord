@@ -53,7 +53,8 @@ def jira_webhook():
             .strftime("%Y-%m-%d %H:%M:%S")
         )
         message = f"**{issue_key}** - {event_type}: {issue_summary} by {user} at {time}.\nURL: https://goty.atlassian.net/browse/{issue_key}/"
-        response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
+        # response = requests.post(DISCORD_WEBHOOK_URL, json={"content": message})
+        printf(message)
         if response.status_code == 204:
             return "Success", 200
         else:
