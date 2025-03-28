@@ -1,3 +1,13 @@
+from flask import Flask, request
+import requests
+import os
+
+app = Flask(__name__)
+
+DISCORD_WEBHOOK_URL = os.environ.get("DISCORD_WEBHOOK_URL")
+JIRA_SECRET_TOKEN = os.environ.get("JIRA_SECRET_TOKEN")  # Optional
+
+
 @app.route("/webhook", methods=["POST"])
 def jira_webhook():
     print(f"Headers: {request.headers}")
